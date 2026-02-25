@@ -1,0 +1,156 @@
+*{
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+}
+
+body {
+    font-family: Arial, sans-serif;
+    background: #f0f2f5;
+    padding: 20px;
+}
+
+.container{
+    max-width: 1200px;
+    margin: 0 auto;
+}
+
+header{
+    background: #2c3e50;
+    color: white;
+    padding: 20px;
+    border-radius: 8px;
+    margin-bottom: 20px;
+    text-align: center;
+}
+
+h1{
+    margin-bottom: 10px;
+}
+
+h2{
+    color:#2c3e50;
+    margin-bottom:  15px;
+    padding-bottom: 10px;
+    border-bottom: 2px solid #3498db;
+}
+
+section{
+    background: white;
+    padding: 20px;
+    margin-bottom: 20px;
+    border-radius: 8px;
+    box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+}
+
+
+/* Forms */
+.form-group {
+    margin-bottom: 15px;
+}
+
+input, select, textarea {
+    width: 100%;
+    padding: 10px;
+    border: 1px solid #ddd;
+    border-radius: 4px;
+    font-size: 14px;
+}
+
+button {
+    background: #3498db;
+    color: white;
+    border: none;
+    padding: 10px 20px;
+    border-radius: 4px;
+    cursor: pointer;
+    font-size: 14px;
+    margin-right: 10px;
+}
+
+button:hover {
+    background: #2980b9;
+}
+
+button.delete {
+    background: #e74c3c;
+}
+
+button.delete:hover {
+    background: #c0392b;
+}
+
+button.complete {
+    background: #27ae60;
+}
+
+button.complete:hover {
+    background: #229954;
+}
+
+
+/* Cards */
+.card {
+    border: 1px solid #ddd;
+    padding: 15px;
+    margin-bottom: 10px;
+    border-radius: 4px;
+    background: #f9f9f9;
+}
+
+.card h3 {
+    margin-bottom: 10px;
+    color: #2c3e50;
+}
+
+.card p {
+    margin-bottom: 8px;
+    color: #666;
+}
+
+.card.overdue {
+    border-left: 4px solid #e74c3c;
+    background: #fff5f5;
+}
+
+/* Status badges */
+.status {
+    display: inline-block;
+    padding: 4px 8px;
+    border-radius: 4px;
+    font-size: 12px;
+    font-weight: bold;
+}
+
+.status-pending {
+    background: #f39c12;
+    color: white;
+}
+
+.status-completed {
+    background: #27ae60;
+    color: white;
+}
+
+/* Layout */
+.flex {
+    display: flex;
+    gap: 20px;
+}
+
+.flex > * {
+    flex: 1;
+}
+
+.hidden {
+    display: none;
+}
+
+.mt-20 {
+    margin-top: 20px;
+}
+
+.text-small {
+    font-size: 12px;
+    color: #999;
+}

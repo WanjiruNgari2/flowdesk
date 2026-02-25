@@ -10,7 +10,7 @@ router.post("/", clientController.createClient);
 router.patch("/:id", clientController.updateClient); 
 router.delete("/:id", clientController.deleteClient); 
 
-module.export = router;
+module.exports = router;
 
 
 

@@ -1,7 +1,6 @@
 const pool = require("../db/db");
 
-
-//Get all Clients
+// Get all Clients
 const clientController = {
     getAllClients: async (req, res) => {
         try {
@@ -15,32 +14,39 @@ const clientController = {
         }
     },
 
-
-
-
-    //Create clients
+    // Create clients
     createClient: async (req, res) => {
-        const { name, email, company } = req.body;
+        const { name, email, company } = req.body || {};   // <- default empty object
+
+        if (!name || !email) {
+            return res.status(400).json({ error: "name and email are required" });
+        }
+
+        const emailRegex = /^[^\s@]+@gmail\.com$/;
+        if (!emailRegex.test(email)) {
+            return res.status(400).json({ error: "Invalid email. Only Gmail addresses are allowed." });
+        }
 
         try {
             const result = await pool.query(
-                "INSERT INTO CLIENTS (name, email, company) VALUES ($1, $2, $3) RETURNING *",
+                "INSERT INTO clients (name, email, company) VALUES ($1, $2, $3) RETURNING *",
                 [name, email, company]
             );
 
-
             const client = result.rows[0];
 
+            // Insert default tasks for the new client (use $1 for client id)
             await pool.query(
                 `INSERT INTO tasks (client_id, title, description, due_date, status)
-    VALUES 
-    ($2, 'Kickoff Meeting', 'Initial onboarding call', CURRENT_DATE + INTERVAL '3 days', 'Pending'),
-    ($3, 'Requirements Gathering', 'Collect project requirements', CURRENT_DATE + INTERVAL '7 days', 'Pending')`,
+                 VALUES
+                 ($1, 'Kickoff Meeting', 'Initial onboarding call', CURRENT_DATE + INTERVAL '3 days', 'Pending'),
+                 ($1, 'Requirements Gathering', 'Collect project requirements', CURRENT_DATE + INTERVAL '7 days', 'Pending')`,
                 [client.id]
             );
 
-            res, json({
-                message: "Client created successfully"
+            res.json({
+                message: "Client created successfully",
+                client
             });
 
         } catch (error) {
@@ -49,9 +55,7 @@ const clientController = {
         }
     },
 
-
-
-    //Update client
+    // Update client
     updateClient: async (req, res) => {
         try {
             const { id } = req.params;
@@ -73,23 +77,23 @@ const clientController = {
         }
     },
 
-
-
-    //Delete client
+    // Delete client
     deleteClient: async (req, res) => {
         try {
             const { id } = req.params;
             await pool.query("DELETE FROM clients WHERE id = $1", [id]);
-            res.json({ message: "client has been deleted" });
+            res.json({ message: "Client has been deleted" });
         } catch (err) {
             console.error(err);
             res.status(500).json({ error: "Delete failed!" });
         }
     }
+};
 
-    };
+module.exports = clientController;
 
-    module.exports = clientController;
+
+
 
 
 
