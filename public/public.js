@@ -274,19 +274,29 @@ async function renderClients() {
     clientsList.innerHTML = html;
 }
 
+// helper used by both renderTasks and renderOverdueTasks
+function isOverdueDate(dateStr) {
+    const due = new Date(dateStr);
+    due.setHours(0, 0, 0, 0);        // compare just the calendar date
+    const today = new Date();
+    today.setHours(0, 0, 0, 0);
+    return due < today;
+}
+
 async function renderTasks() {
     const tasks = await fetchTasks();
-    
+
     if (tasks.length === 0) {
         tasksList.innerHTML = '<p>No tasks yet.</p>';
         return;
     }
-    
+
     let html = '';
     tasks.forEach(task => {
-        const isOverdue = task.status !== 'Completed' && new Date(task.due_date) < new Date();
+        const isOverdue = task.status !== 'Completed' &&
+                          isOverdueDate(task.due_date);
         const overdueClass = isOverdue ? 'overdue' : '';
-        
+
         html += `
             <div class="card ${overdueClass}" data-task-id="${task.id}">
                 <h3>${task.title}</h3>
@@ -304,30 +314,46 @@ async function renderTasks() {
             </div>
         `;
     });
-    
+
     tasksList.innerHTML = html;
 }
 
 async function renderOverdueTasks() {
-    const tasks = await fetchOverdueTasks();
-    
+    // try the API first
+    let tasks = await fetchOverdueTasks();
+    console.log('overdue tasks from API:', tasks);
+
+    // if the endpoint gave us nothing, compute locally
+    if (!Array.isArray(tasks) || tasks.length === 0) {
+        const all = await fetchTasks();
+        tasks = all.filter(t =>
+            t.status !== 'Completed' && isOverdueDate(t.due_date)
+        );
+        if (tasks.length) {
+            console.log('overdue tasks calculated client‑side:', tasks);
+        }
+    }
+
     if (tasks.length === 0) {
         overdueList.innerHTML = '<p>No overdue tasks. Good job!</p>';
         return;
     }
-    
+
     let html = '';
     tasks.forEach(task => {
         html += `
             <div class="card overdue">
                 <h3>${task.title}</h3>
-                <p>Client: ${task.client_name}</p>
+                <p>Client: ${task.client_name || task.client?.name || 'Unknown'}</p>
                 <p>Due: ${new Date(task.due_date).toLocaleDateString()}</p>
-                <button class="complete" onclick="handleCompleteTask(${task.id})">Mark Complete</button>
+                <button class="complete"
+                        onclick="handleCompleteTask(${task.id})">
+                    Mark Complete
+                </button>
             </div>
         `;
     });
-    
+
     overdueList.innerHTML = html;
 }
 
