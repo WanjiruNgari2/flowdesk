@@ -18,13 +18,12 @@ const clientController = {
     createClient: async (req, res) => {
         const { name, email, company } = req.body || {};   // <- default empty object
 
-        if (!name || !email) {
-            return res.status(400).json({ error: "name and email are required" });
+        if (!name) {
+            return res.status(400).json({ error: "name is required" });
         }
 
-        const emailRegex = /^[^\s@]+@gmail\.com$/;
-        if (!emailRegex.test(email)) {
-            return res.status(400).json({ error: "Invalid email. Only Gmail addresses are allowed." });
+        if (email && !email.includes('@')) {
+            return res.status(400).json({ error: "Invalid email address - must contain @" });
         }
 
         try {
@@ -39,8 +38,8 @@ const clientController = {
             await pool.query(
                 `INSERT INTO tasks (client_id, title, description, due_date, status)
                  VALUES
-                 ($1, 'Kickoff Meeting', 'Initial onboarding call', CURRENT_DATE + INTERVAL '3 days', 'Pending'),
-                 ($1, 'Requirements Gathering', 'Collect project requirements', CURRENT_DATE + INTERVAL '7 days', 'Pending')`,
+                 ($1, 'Initial Call', 'Initial onboarding call', CURRENT_DATE + INTERVAL '2 days', 'Pending'),
+                 ($1, 'Schedule Meeting', 'Schedule follow-up meeting', CURRENT_DATE + INTERVAL '5 days', 'Pending')`,
                 [client.id]
             );
 

@@ -25,7 +25,7 @@ const html = `
 
     <button id="add-client-btn"> Add Client </button>
 
-    < <div id="clients-list" class="mt-20"></div>
+    <div id="clients-list" class="mt-20"></div>
     </section>
 
 
@@ -35,7 +35,7 @@ const html = `
     <div class="form-group">
        <select id="task-client-select" >
           <option value=""> Select Client  </option>
-       </select
+       </select>
     </div>
 
 
@@ -101,18 +101,26 @@ function getElements() {
 // api functions:
         // 1.client api
 async function fetchClients() {
-    try{
+    try {
+        console.log('Fetching clients from:', `${API_BASE}/clients`);
         const response = await fetch(`${API_BASE}/clients`);
+        console.log('Clients response status:', response.status);
+        
+        if (!response.ok) {
+            const body = await response.text();
+            throw new Error(`Failed to fetch clients: ${response.status} ${body}`);
+        }
         const clients = await response.json();
-      return clients;
-    } catch(error){
+        console.log('Clients fetched:', clients);
+        return clients;
+    } catch(error) {
         console.error('Error fetching clients:', error);
+        return []; // return empty list so render functions can handle gracefully
     }
-    
 }
 
 async function createClient(clientdata) {
-    try{
+    try {
         const response = await fetch(`${API_BASE}/clients`, {
             method: 'POST',
             headers: {
@@ -120,16 +128,21 @@ async function createClient(clientdata) {
             },
             body: JSON.stringify(clientdata)
         });
-        return await response.json();
+        const data = await response.json();
+        if (!response.ok) {
+            throw new Error(data.error || 'Unknown error');
+        }
+        return data;
     } catch(error) {
         console.error('Error creating client:', error);
+        throw error; // let caller show message
     }
 }
 
 
 async function deleteClient(clientId) {
     try{
-        await fetch(`${API_BASE}/clients/${clientId}`, {
+        const response = await fetch(`${API_BASE}/clients/${clientId}`, {
             method:'DELETE'
         });
         return response.ok;
@@ -144,9 +157,14 @@ async function deleteClient(clientId) {
 async function fetchTasks() {
     try{
         const response = await fetch (`${API_BASE}/tasks`);
+        if (!response.ok) {
+            const body = await response.text();
+            throw new Error(`Failed to fetch tasks: ${response.status} ${body}`);
+        }
         return await  response.json();
     }catch(error) {
         console.error('Error fetching tasks:', error);
+        return [];
     }
 }
 
@@ -234,7 +252,7 @@ async function deleteTask(taskId) {
 async function renderClients() {
     const clients = await fetchClients();
     
-    if (clients.length === 0) {
+    if (!Array.isArray(clients) || clients.length === 0) {
         clientsList.innerHTML = '<p>No clients yet. Add your first client above.</p>';
         return;
     }
@@ -329,39 +347,45 @@ async function renderClientSelect() {
 //EVENT HANDLERS:
 // Add Client Handler
 async function handleAddClient() {
-    const name = clientName.value.trim()// to read the actual value
+    const name = clientName.value.trim();
     const email = clientEmail.value.trim();
     const company = clientCompany.value.trim();
-    
 
-    if (!name || !email) { // element not found
-    console.error('client inputs missing');
-    return;
-}
-    
-    const clientData = { name, email, company };
-    
-    // Remove empty values
-    if (!email) delete clientData.email;
-    if (!company) delete clientData.company;
-    
-    const result = await createClient(clientData);
-    
-    if (result) {
+    if (!name) {
+        alert('Client name is required');
+        return;
+    }
+
+    if (!email) {
+        alert('Client email is required');
+        return;
+    }
+
+    if (!email.includes('@')) {
+        alert('Please enter a valid email address');
+        return;
+    }
+
+    const clientData = { name, email };
+    if (company) clientData.company = company;
+
+    try {
+        const result = await createClient(clientData);
+
         // Clear form
         clientName.value = '';
         clientEmail.value = '';
         clientCompany.value = '';
-        
+
         // Refresh all displays
         await renderClients();
         await renderClientSelect();
         await renderTasks();
         await renderOverdueTasks();
-        
+
         alert('Client created successfully with default tasks!');
-    } else {
-        alert('Failed to create client');
+    } catch (error) {
+        alert('Failed to create client: ' + error.message);
     }
 }
 
@@ -480,19 +504,33 @@ window.viewClientTasks = async function(clientId) {
 
 
 // start/initialize prog:
-async function  init() {
-    frontendUI();
-    getElements();
+async function init() {
+    try {
+        frontendUI();
+        getElements();
 
-    addClientBtn.addEventListener('click', handleAddClient);
-    addTaskBtn.addEventListener('click', handleAddTask);
+        addClientBtn.addEventListener('click', handleAddClient);
+        addTaskBtn.addEventListener('click', handleAddTask);
 
-    //load initial data:
-    await renderClients();
-    await renderClientSelect();
-    await renderTasks();
-    await renderOverdueTasks();
-    
+        // load initial data with error handling
+        console.log('Loading initial data...');
+        await renderClients();
+        console.log('Clients loaded');
+        
+        await renderClientSelect();
+        console.log('Client select populated');
+        
+        await renderTasks();
+        console.log('Tasks loaded');
+        
+        await renderOverdueTasks();
+        console.log('Overdue tasks loaded');
+        
+        console.log('App initialized successfully');
+    } catch (error) {
+        console.error('Failed to initialize app:', error);
+        alert('Failed to load app data. Check console for errors.');
+    }
 }
 
 document.addEventListener('DOMContentLoaded', init);
