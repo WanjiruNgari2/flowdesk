@@ -138,6 +138,7 @@ const taskController = {
                 }
             }));
 
+            res.json(tasks);
         } catch(err) {
             console.error("Error fetching overdue tasks:", err);
             res.status(500).json({ error: "Error fetching overdue tasks" });
