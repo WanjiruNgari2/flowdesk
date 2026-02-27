@@ -30,7 +30,7 @@ const html = `
 
 
     <section id="tasks-section" >
-    <h2> Tasks </h2>
+    <h2> Pending Tasks </h2>
 
     <div class="form-group">
        <select id="task-client-select" >
