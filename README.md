@@ -1,312 +1,442 @@
-# FlowDesk - Project Management Application
-## Table of Contents
-    Overview
+# 🚀 FlowDesk - Project Management Application
 
-    Technologies Used
+A **full-stack project management application** designed to help teams efficiently track clients, manage tasks, and monitor project progress. Features real-time task updates, automated default workflows, and comprehensive filtering capabilities.
 
-    Project Structure
+## 🌐 Live Demo
 
-    Prerequisites
+**https://flowdesk-qexia6st1-damaris-projects-68c92c9e.vercel.app/**
 
-    Installation Guide
+Try it now:
+1. Add a new client → automatic default tasks are created
+2. View tasks by status (Pending, Completed, Overdue)
+3. Filter tasks by date range or client name
+4. Track task completion and deadlines
+5. Monitor overdue tasks automatically
 
-    Database Setup
+---
 
-    Backend API Documentation
+## ✨ Key Features
 
-    Frontend Development
+### 👥 Client Management
+- **Create clients** with name, email, and company information
+- **Auto-generate default tasks** (Kickoff Meeting & Requirements Gathering) when new clients are added
+- **View all clients** with creation timestamps
+- **Update client information** (partial updates supported)
+- **Delete clients** with cascading task deletion
 
-    Testing the Application
+### ✅ Task Management
+- **Create tasks** for specific clients with title, description, and due dates
+- **Track task status**: Pending, Completed, or Overdue
+- **Auto-calculate overdue tasks** - tasks past their due date appear in overdue section
+- **Mark tasks as complete** with automatic completion timestamps
+- **Filter tasks** by:
+  - Status (Pending/Completed/Overdue)
+  - Client name
+  - Due date ranges
+- **View all overdue tasks** for priority management
+- **Delete tasks** individually
 
-    Git Version Control
+### 🎯 Automated Workflows
+- **Default Tasks Generated**:
+  - *Kickoff Meeting* - Due 3 days from client creation
+  - *Requirements Gathering* - Due 7 days from client creation
+- **Smart Date Handling** - Automatic EDD calculation and overdue detection
+- **Cascading Deletes** - Removing a client removes all associated tasks
 
-    Deployment Considerations
+### 🎨 User Interface
+- **Responsive design** - Works on desktop and tablets
+- **Real-time filtering** - Search by date, client name, or task status
+- **Clean dashboard** - Easy navigation between clients and tasks
+- **Status indicators** - Visual feedback for task completion and overdue items
+- **Intuitive controls** - One-click operations for common actions
 
-    Future Enhancements
+---
 
-    Troubleshooting
+## 🛠️ Tech Stack
 
-## Overview
-FlowDesk is a full-stack project management application designed to help teams track clients, tasks, and project progress. The application allows users to create and manage client records, assign tasks with due dates, track task statuses, and monitor overdue items. This project demonstrates proficiency in database design, RESTful API development, and frontend integration.
+| Component | Technology |
+|-----------|-----------|
+| **Frontend** | HTML5, CSS3, Vanilla JavaScript (ES6+) |
+| **Backend** | Node.js, Express.js |
+| **Database** | PostgreSQL (relational DB) |
+| **Deployment** | Vercel (Frontend), Custom Backend |
+| **API Communication** | RESTful API with Fetch API |
+| **Version Control** | Git & GitHub |
 
- It includes comprehensive CRUD operations for both clients and tasks, with relational database constraints ensuring data integrity.
+---
 
-## Technologies Used
-    Backend
-    Node.js - JavaScript runtime environment
-    Express.js - Web application framework for routing and middleware
-    PostgreSQL - Relational database management system
-    pg - PostgreSQL client for Node.js
-    Nodemon - Development tool for automatic server restarts
+## 📁 Project Structure
 
-    Frontend (To Be Developed)
-    HTML5 - Markup language for structure
-    CSS3 - Styling and responsive design
-    JavaScript - Client-side interactivity
-    Fetch API - HTTP requests to backend services
+```
+flowdesk/
+├── controllers/
+│   ├── clientController.js      # Client CRUD operations
+│   └── taskController.js        # Task CRUD & filtering logic
+├── routes/
+│   ├── index.js                 # Main router
+│   ├── clientRoutes.js          # Client endpoints
+│   └── taskRoutes.js            # Task endpoints
+├── db/
+│   └── db.js                    # PostgreSQL connection configuration
+├── public/                      # Frontend (deployed to Vercel)
+│   ├── index.html               # Main UI
+│   ├── css/
+│   │   └── style.css            # Responsive styling
+│   └── js/
+│       └── app.js               # Client-side logic
+├── server.js                    # Express app & server entry point
+├── package.json                 # Dependencies & scripts
+├── .env.example                 # Environment template
+└── README.md                    # Documentation
+```
 
-    Development Tools
-    Postman - API testing and documentation
-    Git - Version control system
-    GitHub - Remote repository hosting
+---
 
+## 🚀 Getting Started
 
-## Project Structure
-The project follows a modular, organized structure that separates concerns and promotes code reusability.
+### Prerequisites
+- Node.js (v14+)
+- PostgreSQL (v12+)
+- Git
+- Postman (optional, for API testing)
 
-        text
-        flowdesk/
-        │
-        ├── controllers/
-        │   ├── clientController.js      # Client-related database operations
-        │   └── taskController.js         # Task-related database operations
-        │
-        ├── routes/
-        │   ├── index.js                  # Main router combining all routes
-        │   ├── clientRoutes.js           # Client endpoint definitions
-        │   └── taskRoutes.js              # Task endpoint definitions
-        │
-        ├── db/
-        │   └── db.js                      # Database connection configuration
-        │
-        ├── public/
-        │   ├── index.html                 # Main frontend entry point
-        │   ├── css/
-        │   │   └── style.css              # Frontend styling
-        │   └── js/
-        │       └── app.js                  # Frontend JavaScript logic
-        │
-        ├── node_modules/                   # Dependencies (ignored by Git)
-        ├── .gitignore                       # Git ignore rules
-        ├── package.json                     # Project dependencies and scripts
-        ├── package-lock.json                 # Locked dependency versions
-        ├── plan.md                           # Development planning document
-        ├── server.js                         # Main application entry point
-        └── README.md                         # Project documentation
-## Prerequisites
-Before installing and running this application, ensure you have the following installed on your system:
+### 🔧 Local Installation
 
-        Node.js (version 14 or higher)
-        Download from: https://nodejs.org/
-        Verify installation: node --version
-        PostgreSQL (version 18 or higher)
-        Download from: https://www.postgresql.org/download/windows/
-        Verify installation: psql --version
-        Git (for version control)
-        Download from: https://git-scm.com/download/win
-        Verify installation: git --version
-        Postman (for API testing)
-        Download from: https://www.postman.com/downloads/
-        Code Editor (VS Code recommended)
-        Download from: https://code.visualstudio.com/
-
-## Installation Guide
-Step 1: Clone the Repository
-bash
-### Clone from GitHub
+**1. Clone & Setup**
+```bash
 git clone https://github.com/WanjiruNgari2/flowdesk.git
-
-### Navigate to project directory
 cd flowdesk
-Step 2: Install Dependencies
-bash
-### Install all required Node.js packages
 npm install
-This installs the following dependencies:
+```
 
-express: Web framework
-pg: PostgreSQL client
-nodemon: Development server with auto-reload
+**2. Database Setup**
+```bash
+# Start PostgreSQL and create database
+createdb flowdesk
 
-Step 3: Environment Configuration
-Create a .env file in the root directory (this file is ignored by Git for security):
-
-
-
-## DATABASE SETUP
-Step 1: Start PostgreSQL Service
-Ensure PostgreSQL is running on your system:
-
-bash
-### Check if PostgreSQL service is running
-net start postgresql-x64-18
-Step 2: Create Database
-Connect to PostgreSQL and create the database:
-
-bash
-### Connect to default postgres database
+# Or via psql:
 psql -U postgres
-
-### Create the flowdesk database
 CREATE DATABASE flowdesk;
-
-### Connect to the new database
 \c flowdesk;
-Step 3: Create Tables
-Execute the following SQL commands to create the required tables:
+```
 
-sql
--- Create clients table
-        CREATE TABLE clients (
-            id SERIAL PRIMARY KEY,
-            name VARCHAR(100) NOT NULL,
-            email VARCHAR(100) UNIQUE,
-            company VARCHAR(100),
-            created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
-        );
+**3. Create Tables**
+```sql
+-- Clients table
+CREATE TABLE clients (
+    id SERIAL PRIMARY KEY,
+    name VARCHAR(100) NOT NULL,
+    email VARCHAR(100) UNIQUE,
+    company VARCHAR(100),
+    created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
+);
 
--- Create tasks table with foreign key constraint
-        CREATE TABLE tasks (
-            id SERIAL PRIMARY KEY,
-            client_id INTEGER REFERENCES clients(id) ON DELETE CASCADE,
-            title VARCHAR(255) NOT NULL,
-            description TEXT,
-            status VARCHAR(50) DEFAULT 'Pending',
-            due_date DATE,
-            completed_at TIMESTAMP,
-            created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
-        );
+-- Tasks table with foreign key constraint
+CREATE TABLE tasks (
+    id SERIAL PRIMARY KEY,
+    client_id INTEGER REFERENCES clients(id) ON DELETE CASCADE,
+    title VARCHAR(255) NOT NULL,
+    description TEXT,
+    status VARCHAR(50) DEFAULT 'Pending',
+    due_date DATE,
+    completed_at TIMESTAMP,
+    created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
+);
+```
 
--- Verify tables were created
-\dt
-Step 4: Verify Database Connection
-Test the database connection using the Node.js application:
+**4. Environment Configuration**
+```bash
+cp .env.example .env
+# Edit .env with your database credentials:
+# DATABASE_URL=postgresql://user:password@localhost:5432/flowdesk
+```
 
-bash
-### Start the server
+**5. Start Development Server**
+```bash
 npm run dev
+# Server runs at http://localhost:3000
+```
 
-### In another terminal, test the connection
-curl http://localhost:3000/
-Expected response: "Project currently running!"
+---
 
+## 📡 API Endpoints
 
-## Backend API Documentation
-The backend provides RESTful endpoints for managing clients and tasks. All endpoints return JSON responses.
+**Base URL**: `http://localhost:3000/api`
 
-Base URL:  http://localhost:3000/api
-Client Endpoints
-### 1. Get All Clients
-URL: /api/clients
-Method: GET
-Description: Retrieves all clients ordered by creation date
-Response: Array of client objects
-        [
-        {
-            "id": 1,
-            "name": "Acme Corporation",
-            "email": "contact@acme.com",
-            "company": "Acme Inc",
-            "created_at": "2026-02-24T10:30:00.000Z"
-        }
-        ]
+### Client Endpoints
 
+| Method | Endpoint | Description |
+|--------|----------|-------------|
+| GET | `/clients` | Get all clients (sorted by creation date) |
+| GET | `/clients/:id` | Get single client by ID |
+| POST | `/clients` | Create new client (auto-generates default tasks) |
+| PATCH | `/clients/:id` | Update client info |
+| DELETE | `/clients/:id` | Delete client & cascade delete tasks |
 
-### 2. Get Single Client
-URL: /api/clients/:id
-Method: GET
-Description: Retrieves a specific client by ID
-Response: Single client object or 404 error
+**Example: Create a Client**
+```bash
+POST /api/clients
+Content-Type: application/json
 
-### 3. Create Client
-URL: /api/clients
-Method: POST
-Description: Creates a new client and automatically generates two default tasks
-Request Body:
+{
+  "name": "Tech Startup Inc",
+  "email": "hello@techstartup.com",
+  "company": "Tech Startup LLC"
+}
+```
 
-        {
-        "name": "Tech Startup",
-        "email": "info@techstartup.com",
-        "company": "Tech Startup LLC"
-        }
-Response: Created client object with success message
+**Response** (201 Created):
+```json
+{
+  "id": 1,
+  "name": "Tech Startup Inc",
+  "email": "hello@techstartup.com",
+  "company": "Tech Startup LLC",
+  "created_at": "2026-05-11T10:30:00.000Z",
+  "message": "Client created! Default tasks generated."
+}
+```
 
-### 4. Update Client
-URL: /api/clients/:id
-Method: PATCH
-Description: Updates client information (partial updates supported)
-Request Body:
+### Task Endpoints
 
-        json
-        {
-        "name": "Updated Company Name",
-        "email": "newemail@company.com"
-        }
+| Method | Endpoint | Description |
+|--------|----------|-------------|
+| GET | `/tasks` | Get all tasks |
+| GET | `/tasks/:id` | Get single task |
+| GET | `/tasks/client/:id` | Get all tasks for a client |
+| GET | `/tasks/overdue` | Get overdue tasks (past due date) |
+| POST | `/tasks` | Create new task |
+| PATCH | `/tasks/:id/status` | Update task status & set completion timestamp |
+| DELETE | `/tasks/:id` | Delete task |
 
+**Example: Get Overdue Tasks**
+```bash
+GET /api/tasks/overdue
+```
 
-### 5. Delete Client
-URL: /api/clients/:id
-Method: DELETE
-Description: Removes a client and all associated tasks (cascade delete)
-Response: Confirmation message
+**Response**:
+```json
+[
+  {
+    "id": 2,
+    "client_id": 1,
+    "title": "Design Homepage",
+    "status": "Pending",
+    "due_date": "2026-04-15",
+    "created_at": "2026-05-01T00:00:00.000Z",
+    "client_name": "Tech Startup Inc"
+  }
+]
+```
 
+**Example: Mark Task Complete**
+```bash
+PATCH /api/tasks/2/status
+Content-Type: application/json
 
-## Task Endpoints
-### 1. Get All Tasks
-URL: /api/tasks
-Method: GET
-Description: Retrieves all tasks with optional status filter
-Query Parameters: ?status=Pending or ?status=Completed
-Response: Array of task objects with client names
+{
+  "status": "Completed"
+}
+```
 
-### 2. Get Tasks by Client
-URL: /api/tasks/client/:id
-Method: GET
-Description: Retrieves all tasks for a specific client
-Response: Array of task objects
+---
 
-### 3. Create Task
-URL: /api/tasks
-Method: POST
-Description: Creates a new task for an existing client
-Request Body:
+## 🎯 How It Works
 
-        json
-        {
-        "client_id": 1,
-        "title": "Design homepage",
-        "description": "Create wireframes and mockups",
-        "due_date": "2026-03-01"
-        }
+### Workflow Example
 
+1. **User adds a client** → "Acme Corp"
+   - Client record created in database
+   - System automatically creates 2 default tasks:
+     - "Kickoff Meeting" (due in 3 days)
+     - "Requirements Gathering" (due in 7 days)
 
-### 4. Update Task Status
-URL: /api/tasks/:id/status
-Method: PATCH
-Description: Updates task status and automatically sets completion timestamp
+2. **User adds additional tasks** → "Design Mockups" (due 2026-06-01)
+   - Task linked to client via `client_id`
+   - Task saved with status "Pending"
 
-Request Body:
+3. **User filters tasks**
+   - By status: See all "Pending" tasks
+   - By client: See all tasks for "Acme Corp"
+   - By date: See tasks due in next week
+   - By overdue: Automatically shows tasks past due date
 
-        json
-        {
-        "status": "Completed"
-        }
+4. **User marks task complete**
+   - Status changes to "Completed"
+   - `completed_at` timestamp is set automatically
+   - Task no longer appears in "Pending" or "Overdue" sections
 
+---
 
-### 5. Get Overdue Tasks
-URL: /api/tasks/overdue
-Method: GET
-Description: Retrieves all incomplete tasks past their due date
-Response: Array of overdue task objects
+## 🧪 Testing the Application
 
-### 6. Delete Task
-URL: /api/tasks/:id
-Method: DELETE
-Description: Removes a specific task
-Response: Deleted task object and confirmation
+### Manual Testing (UI)
+1. Open: https://flowdesk-qexia6st1-damaris-projects-68c92c9e.vercel.app/
+2. Add a new client
+3. Verify default tasks appear
+4. Create additional tasks with different due dates
+5. Filter by status, date range, or client name
+6. Mark tasks as complete
+7. Check overdue section
 
+### API Testing (Postman)
+```bash
+# Get all clients
+GET http://localhost:3000/api/clients
 
+# Create a task
+POST http://localhost:3000/api/tasks
+Body: {
+  "client_id": 1,
+  "title": "Deploy to Production",
+  "description": "Push latest changes to live server",
+  "due_date": "2026-06-15"
+}
 
-## Default Tasks Generated
-When a new client is created, the system automatically generates these two tasks:
+# Get overdue tasks
+GET http://localhost:3000/api/tasks/overdue
+```
 
-    Kickoff Meeting
-    Due: 3 days from client creation
-    Description: Initial onboarding call with the client
-    Requirements Gathering
-    Due: 7 days from client creation
-    Description: Collect and document project requirements
+---
 
+## 💡 Key Features Demonstrated
 
+### Backend Skills
+✅ **RESTful API Design** - Proper HTTP methods and status codes  
+✅ **Database Modeling** - Relational schema with foreign keys & cascading deletes  
+✅ **Business Logic** - Auto-generate tasks, calculate overdue items  
+✅ **Error Handling** - Graceful error messages  
+✅ **CORS & Middleware** - Proper request handling  
+✅ **Environment Management** - Secure .env configuration  
 
-## FRONTEND DVT
+### Frontend Skills
+✅ **DOM Manipulation** - Dynamic task/client rendering  
+✅ **Async Operations** - Fetch API for server communication  
+✅ **State Management** - Track clients, tasks, filters locally  
+✅ **Event Handling** - Buttons, forms, filters  
+✅ **Responsive Design** - Works on different screen sizes  
+✅ **User Experience** - Intuitive filtering & searching  
+
+### DevOps/Deployment
+✅ **Live Deployment** - Frontend on Vercel  
+✅ **Environment Configuration** - .env files for security  
+✅ **Version Control** - Git commits & GitHub repo  
+✅ **API Integration** - Frontend ↔ Backend communication  
+
+---
+
+## 🔄 Default Tasks Explained
+
+When a client is created, the system automatically generates two kickoff tasks:
+
+| Task | Due Date | Purpose |
+|------|----------|---------|
+| **Kickoff Meeting** | +3 days | Initial onboarding call with client |
+| **Requirements Gathering** | +7 days | Document and collect project requirements |
+
+This saves time and ensures no client is missed!
+
+---
+
+## 📈 What's Working
+
+- ✅ Full CRUD operations for clients and tasks
+- ✅ Automatic task generation on client creation
+- ✅ Overdue task detection and filtering
+- ✅ Status tracking (Pending → Completed)
+- ✅ Cascading deletes (remove client = remove tasks)
+- ✅ Responsive UI
+- ✅ Live deployment
+- ✅ Real-time filtering and search
+- ✅ Date-based task management
+
+---
+
+## 🚀 Future Enhancements
+
+- Add user authentication (login/signup)
+- Real-time notifications when tasks are overdue
+- Task priority levels (High, Medium, Low)
+- Task assignment to team members
+- Comments/notes on tasks
+- File attachments to tasks
+- Calendar view
+- Email reminders before due dates
+- Task templates for recurring projects
+- Analytics dashboard
+
+---
+
+## 🛠️ Technologies Used
+
+**Frontend**
+- HTML5 - Semantic markup
+- CSS3 - Responsive design, Flexbox
+- Vanilla JavaScript (ES6+) - No framework, pure JS
+- Fetch API - Async HTTP requests
+
+**Backend**
+- Node.js - JavaScript runtime
+- Express.js - Web framework
+- PostgreSQL - Relational database
+- CORS - Cross-origin requests
+- Dotenv - Environment variables
+
+**DevOps**
+- Vercel - Frontend hosting
+- Git - Version control
+- GitHub - Repository hosting
+
+---
+
+## 📝 Learning Outcomes
+
+Through building FlowDesk, I learned:
+
+✅ **REST API Architecture** - Designing logical, scalable endpoints  
+✅ **Database Design** - Relationships, constraints, cascading operations  
+✅ **Frontend-Backend Communication** - Async operations & error handling  
+✅ **Business Logic Implementation** - Auto-generation, calculated fields  
+✅ **Deployment Workflow** - Getting projects from localhost to production  
+✅ **Problem Solving** - Debugging across full stack  
+✅ **Git & Collaboration** - Version control best practices  
+✅ **User Experience** - Building intuitive interfaces  
+
+---
+
+## 🤝 Contributing
+
+This is a personal portfolio project. However, if you'd like to:
+- Report bugs
+- Suggest improvements
+- Ask questions about the code
+
+Feel free to open an issue on GitHub!
+
+---
+
+## 📄 License
+
+MIT License - Feel free to use this project as a reference
+
+---
+
+## 👨‍💻 Author
+
+**Damaris Ngari**
+
+Built with ❤️ as a full-stack learning project demonstrating backend API design, database management, and complete deployment workflow.
+
+---
+
+## 📞 Questions?
+
+If you have questions about how FlowDesk works:
+1. Check the API Endpoints section
+2. Try the live demo
+3. Review the code structure
+4. Email: wanjirungari2@gmail.com
+
+---
+
+**Status**: ✅ Production Ready | 📱 Fully Responsive | 🌐 Live Demo Available
